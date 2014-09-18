@@ -1,6 +1,6 @@
 <body>
+    <div id="wrapper">
     <center><h1>Sistema de Monitoramento<h1></center>
-    <center><h3>Horário atual: <div id="horario"></div></h3></center>
     
     <div class="image">
         <center><img src="bee.gif" style="display:none" id="theBee"></center>
@@ -12,6 +12,8 @@
         <li><a href="#" id="lhistorico" title="historico" >Histórico</a></li>
         <li><a href="#" id="lexportar" title="exportar" >Exportar</a></li>
         <li><a href="#" id="llimpar" title="limpar" >Limpar</a></li>
+        <li><a href="#" id="lstream" title="stream" >Ao vivo</a></li>
+        <li><a href="#" id="lpictures" title="pictures" >Fotos</a></li>
       </ul>
     </div>
 
@@ -42,6 +44,44 @@
     
     </div>
 
+   <script type="text/javascript" src="/javascripts/smp/swfobject.js"></script>
+   <script type="text/javascript">        
+          
+       // Create a StrobeMediaPlayback configuration
+      var parameters = { 
+                     src: "rtmp://" + window.location.hostname + "/flvplayback/myStream", 
+                              autoPlay: true, 
+                     controlBarAutoHide: false, 
+                     playButtonOverlay: true, 
+                     showVideoInfoOverlayOnStartUp: false, 
+                              optimizeBuffering : false, 
+                              initialBufferTime : 0.1, 
+                              expandedBufferTime : 0.1, 
+                              minContinuousPlayback : 0.1, 
+                   }; 
+          
+      // Embed the player SWF:          
+      swfobject.embedSWF
+         ( "javascripts/smp/StrobeMediaPlayback.swf"
+         , "strobeMediaPlayback"
+         , 800
+         , 430
+         , "10.0"
+         , {}
+         , parameters
+         , { allowFullScreen: "true"}
+         , { name: "strobeMediaPlayback" }
+         );
+      
+    </script> 
+        
+    <center><div id="strobeMediaPlayback"></div></center>
+
+    </div>
+
+    <div id="imagens-cam">
+    </div>
+
     <script language="javascript" type="text/javascript" src="/lang/statusMsgPT.json"></script>
     <script language="javascript" type="text/javascript" src="/javascripts/konami.js"></script>
     <script language="javascript" type="text/javascript" src="/javascripts/flot/jquery.js"></script>
@@ -53,6 +93,6 @@
     <script language="javascript" type="text/javascript" src="/javascripts/flot/jquery.flot.resize.js"></script>
     <script language="javascript" type="text/javascript" src="/javascripts/flot/jquery.flot.downsample.js"></script>
     <script language="javascript" type="text/javascript" src="/javascripts/graphs.js"></script>
-
+    <script language="javascript" type="text/javascript" src="/javascripts/pages.js"></script>
 
 </body>

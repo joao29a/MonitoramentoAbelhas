@@ -1,0 +1,13 @@
+<% if (message) { %>
+<p><%= message %></p>
+<% } %>
+<form action="/login" method="post">
+    <input type="text" name="username" value="minhacasa" style="display:none"/>
+    <div>
+    <label>Senha:</label>
+    <input type="password" name="password"/>
+    </div>
+    <div>
+    <input type="submit" value="Enviar"/>
+    </div>
+</form>

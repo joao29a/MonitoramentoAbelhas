@@ -533,7 +533,7 @@ function showTooltip(x, y, contents) {
   }).appendTo("body").fadeIn(200)
 }
 
-var updateInterval = 1000
+var updateInterval = 60000
 
 function update() {
   $.get('getDados/'+$("#intervalVal").val()).success(
@@ -572,53 +572,3 @@ function addHistoric(nodeName) {
         plotData(res,"HistoricGrid", {closeBox : true, tabs: true, miniGraph: true});
       }); 
 }
-
-$(document).ready(function (e) {
-  var tc = new timeControl();
-  tc.startClockUpdate();
-  update();
-});
-
-
-$("#ltempoReal").click(function() {
-  $("#historico").hide();
-  $("#GraphsGrid").show();
-});
-
-$("#lhistorico").click(function() {
-  $("#GraphsGrid").hide();
-  $("#historico").show();
-  fillNodesOptions();
-});
-
-$("#historico").hide();
-
-$("#lexportar").click(function() {
-  if (!is_loading) {
-    is_loading = true;
-    $("#loading").show();
-    var mode = "all";
-    $.get('exportData/'+mode).success(
-      function(data) {
-        saveOnFile(data);
-      });
-    $("#loading").hide();
-    is_loading = false;
-  }
-  else alertLoading();
-});
-
-$("#llimpar").click(function() {
-  if (confirm('Você deseja apagar todos os dados?')) {
-    var mode = "all";
-    $.get('deleteData/'+mode).success(
-      function(data) {
-        alert("Todos os dados foram deletados com sucesso.");
-      });
-    }
-});
-
-$("#addHist").click(function() {
-  $("#HistoricGrid").empty();
-  addHistoric($("#nodesBox").val()); 
-});

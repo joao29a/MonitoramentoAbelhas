@@ -11,6 +11,10 @@ var express     =  require('express')
   , exportData  =  require('./routes/exportData')
   , deleteData  =  require('./routes/deleteData')
   , _mysql      =  require('mysql')
+  , passport    =  require('passport')
+  , LocalStrategy = require('passport-local').Strategy
+  , flash       = require('connect-flash')
+  , fs          = require('fs')
   , dataDB      =  require('./public/javascripts/dataDAO');
 
 // DataBase - Mysql
@@ -20,6 +24,12 @@ var PORT       = 3306;
 var MYSQL_USER = 'root';
 var MYSQL_PASS = '123';
 var DATABASE   = 'monitorAbelhas';
+
+var user = {
+    id: 1,
+    username: 'minhacasa',
+    pass: '',
+};
 
 var db_config = {
     host    : HOST,
@@ -58,6 +68,40 @@ function connectToDatabase() {
 
 connectToDatabase();
 
+function getUserId(id, callback) {
+    if (user.id == id) {
+        callback(null, user);
+    }
+    else callback(new Error('Usuario' + id + ' inexistente'));
+}
+
+function getUsername(username, callback) {
+    if (user.username === username) {
+        return callback(null, user);
+    }
+    return callback(null, null);
+}
+
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+    getUserId(id, function(err, user) {
+        done(err, user);
+    });
+});
+
+passport.use(new LocalStrategy(
+    function(username, password, done) {
+        process.nextTick(function () {
+            getUsername(username, function(err, user) {
+                if (!user) { return done(null, false, { message: 'Usuario desconhecido ' + username }); }
+                if (user.pass != password) { return done(null, false, { message: 'Senha invalida.' }); }
+                return done(null, user);
+            });
+            });
+        }));
 
 // Instaciation
 var app = module.exports = express.createServer();
@@ -67,8 +111,14 @@ var app = module.exports = express.createServer();
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
+   app.use(express.logger());
+   app.use(express.cookieParser());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  app.use(express.session({ secret: 'sistema monitoramento' }));
+  app.use(flash());
+  app.use(passport.initialize());
+  app.use(passport.session());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
@@ -83,12 +133,31 @@ app.configure('production', function(){
 
 // Routes
 
-app.get('/'                     , routes.index);
-app.get('/getDados/:interval'   , getDados.getDados);
-app.get('/getNodes'             , getNodes.getNodes);
-app.get('/getHistoric/:nodeName', getHistoric.getHistoric);
-app.get('/exportData/:mode'    , exportData.exportData);
-app.get('/deleteData/:mode'    , deleteData.deleteData);
+app.get('/',                      ensureAuthenticated   , routes.index);
+app.get('/getDados/:interval',    ensureAuthenticated   , getDados.getDados);
+app.get('/getNodes',              ensureAuthenticated   , getNodes.getNodes);
+app.get('/getHistoric/:nodeName', ensureAuthenticated   , getHistoric.getHistoric);
+app.get('/exportData/:mode',      ensureAuthenticated   , exportData.exportData);
+app.get('/deleteData/:mode',      ensureAuthenticated   , deleteData.deleteData);
+app.get('/pictures',             ensureAuthenticated   , function(req, res){
+    fs.readdir('public/imagens', function(err, data) {
+        res.render('pictures', {layout: false, result : data});
+    });
+});
+app.get('/login', function(req, res){
+    res.render('login', { user: req.user, message: req.flash('error')});
+});
+
+app.post('/login',
+    passport.authenticate('local', { successRedirect: '/',
+                                     failureRedirect: '/login', 
+                                     failureFlash: true })
+);
+
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    res.redirect('/login');
+}
 
 //Extra
 

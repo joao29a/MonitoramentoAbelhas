@@ -11,10 +11,8 @@ exports.dataDAO = function(mysql) {
 
     mysql.query(queryText,
         function(err, result, fields) {
-          if (err) throw err;
-          else {
+          if (!err)
             callBack(result);
-          }
         });
   }  
 
@@ -22,8 +20,7 @@ exports.dataDAO = function(mysql) {
     var queryText = "select distinct Prefix from data;"
       mysql.query(queryText,
           function(err, result, fields) {
-            if (err) throw err;
-            else {
+            if (!err){
               callBack(result);
             }
       });
@@ -33,8 +30,7 @@ exports.dataDAO = function(mysql) {
     var queryText = "select * from data order by Prefix;"
     mysql.query(queryText,
       function(err, result, fields) {
-        if (err) throw err;
-        else {
+        if (!err){
           callBack(result);
         }
     });
@@ -44,8 +40,7 @@ exports.dataDAO = function(mysql) {
     var queryText = "select * from data where Prefix = '"+nodeName+"'";
     mysql.query(queryText,
         function(err, result, fields) {
-          if (err) throw err;
-          else {
+          if (!err){
             callBack(result);
           }
         });
@@ -56,8 +51,7 @@ exports.dataDAO = function(mysql) {
     if (types != null || types.length > 0) query += this.addFilter(types);
     mysql.query(query,
       function(err, result, fields) {
-        if (err) throw err;
-        else {
+        if (!err){
           callBack(result);
         }
     });
@@ -67,8 +61,7 @@ exports.dataDAO = function(mysql) {
     var query = "delete from data";
     mysql.query(query,
       function(err, result, fields) {
-        if (err) throw err;
-        else {
+        if (!err){
           callBack(result);
       }
     });
@@ -79,8 +72,7 @@ exports.dataDAO = function(mysql) {
     if (types != null || types.length > 0) query += this.addFilter(types);
     mysql.query(query,
       function(err, result, fields) {
-        if (err) throw err;
-        else {
+        if (!err){
           callBack(result);
       }
     });
