@@ -15,9 +15,20 @@ var express     =  require('express')
   , LocalStrategy = require('passport-local').Strategy
   , flash       = require('connect-flash')
   , fs          = require('fs')
+  , memwatch = require('memwatch')
   , dataDB      =  require('./public/javascripts/dataDAO');
 
 // DataBase - Mysql
+
+var hd = new memwatch.HeapDiff();
+
+memwatch.on('leak', function(info) { console.log(info) });
+memwatch.on('stats', function(stats) { 
+    console.log(stats);
+    console.log(hd.end());
+    delete hd;
+    hd = new memwatch.HeapDiff();
+});
 
 var HOST       = 'localhost';
 var PORT       = 3306;
@@ -133,6 +144,43 @@ app.configure('production', function(){
 
 // Routes
 
+var dates = []
+
+function checkFolders(callback) {
+    var d     = new Date();
+    var year  = d.getFullYear();
+    var month = ('0'+(d.getMonth()+1)).slice(-2);
+    var day   = ('0'+(d.getDate())).slice(-2);
+    var fulldate = year + '-' + month + '-' + day;
+    if (dates.indexOf(fulldate) == -1) {
+        dates.push(fulldate);
+        if (dates.length >= 3) dates.shift();
+    }
+    for (var i = dates.length - 1; i >= 0; i--) {
+        var path = 'public/imagens/' + dates[i];
+        if (fs.existsSync(path)) {
+            var data = fs.readdirSync(path);
+            if (data.length > 0) {
+                var datatime = [];
+                for (var j = 0; j < data.length; j++) {
+                    datatime.push([data[j], fs.statSync(path + '/' + data[j]).ctime]);
+                }
+                datatime.push(dates[i]);
+                callback(datatime);
+                break;
+            }
+        }
+    }
+}
+
+function getVideos(callback) {
+    var path = 'public/javascripts/smp/videos';
+    if (fs.existsSync(path)) {
+        var videos = fs.readdirSync(path);
+        callback(videos);
+    }
+}
+
 app.get('/',                      ensureAuthenticated   , routes.index);
 app.get('/getDados/:interval',    ensureAuthenticated   , getDados.getDados);
 app.get('/getNodes',              ensureAuthenticated   , getNodes.getNodes);
@@ -140,10 +188,17 @@ app.get('/getHistoric/:nodeName', ensureAuthenticated   , getHistoric.getHistori
 app.get('/exportData/:mode',      ensureAuthenticated   , exportData.exportData);
 app.get('/deleteData/:mode',      ensureAuthenticated   , deleteData.deleteData);
 app.get('/pictures',             ensureAuthenticated   , function(req, res){
-    fs.readdir('public/imagens', function(err, data) {
+    checkFolders(function(data) {
         res.render('pictures', {layout: false, result : data});
     });
 });
+app.get('/videos', ensureAuthenticated, function(req, res) {
+    getVideos(function(data) {
+        res.render('videos', {layout: false, result: data});
+    });
+});
+
+
 app.get('/login', function(req, res){
     res.render('login', { user: req.user, message: req.flash('error')});
 });

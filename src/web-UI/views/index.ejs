@@ -1,6 +1,6 @@
 <body>
     <div id="wrapper">
-    <center><h1>Sistema de Monitoramento<h1></center>
+    <center><h1>Sistema de Monitoramento</center>
     
     <div class="image">
         <center><img src="bee.gif" style="display:none" id="theBee"></center>
@@ -14,6 +14,7 @@
         <li><a href="#" id="llimpar" title="limpar" >Limpar</a></li>
         <li><a href="#" id="lstream" title="stream" >Ao vivo</a></li>
         <li><a href="#" id="lpictures" title="pictures" >Fotos</a></li>
+        <li><a href="#" id="lvideos" title="videos" >Videos</a></li>
       </ul>
     </div>
 
@@ -72,14 +73,17 @@
          , { allowFullScreen: "true"}
          , { name: "strobeMediaPlayback" }
          );
-      
     </script> 
         
-    <center><div id="strobeMediaPlayback"></div></center>
-
-    </div>
+    <center><div id="strobeMediaPlayback">
+    </div></center>
 
     <div id="imagens-cam">
+    </div>
+
+    <div id="video-list">
+    </div>
+    
     </div>
 
     <script language="javascript" type="text/javascript" src="/lang/statusMsgPT.json"></script>
