@@ -20,7 +20,8 @@ function showVideos() {
         for (var i in data) {
             data[i] = data[i].replace(' ', '');
             var id = "strobeMediaPlayback" + i;
-            $('#video-list').append('<center>'+ data[i] +'<br><div id="' + id + '"></center><br>');
+            $('#video-list').append('<center>'+ data[i] +'<a href="/javascripts/smp/videos/' + data[i]
+                + '"><button type="button">Download</button><br><div id="' + id + '"></center><br>');
             var parameters = { 
                  src: "videos/" + data[i], 
                           autoPlay: false, 
@@ -97,13 +98,13 @@ function updateImages() {
     function(data) {
         data = data.split('<br>');
         var folder = data.pop().replace(' ', '');
-        for (var i = 0; i < data.length; i++) {
+        for (var i = data.length - 1; i >= 0; i--) {
           var value = data[i].split('&');
           value[0] = value[0].replace(' ', '');
           if (!(value[0] in images_file)) {
               images_file[value[0]] = true;
               path = "imagens/" + folder + "/" + value[0];
-              $("#imagens-cam").prepend('<center><p>' + value[1] + '</p><img src="' + path + '"><center><br>');
+              $("#imagens-cam").append('<center><p>' + value[1] + '</p><img src="' + path + '"><center><br>');
           }
         }
     });
