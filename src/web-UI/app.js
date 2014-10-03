@@ -15,20 +15,9 @@ var express     =  require('express')
   , LocalStrategy = require('passport-local').Strategy
   , flash       = require('connect-flash')
   , fs          = require('fs')
-  , memwatch = require('memwatch')
   , dataDB      =  require('./public/javascripts/dataDAO');
 
 // DataBase - Mysql
-
-var hd = new memwatch.HeapDiff();
-
-memwatch.on('leak', function(info) { console.log(info) });
-memwatch.on('stats', function(stats) { 
-    console.log(stats);
-    console.log(hd.end());
-    delete hd;
-    hd = new memwatch.HeapDiff();
-});
 
 var HOST       = 'localhost';
 var PORT       = 3306;
@@ -39,7 +28,7 @@ var DATABASE   = 'monitorAbelhas';
 var user = {
     id: 1,
     username: 'minhacasa',
-    pass: '',
+    pass: '123',
 };
 
 var db_config = {
