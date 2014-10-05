@@ -4,6 +4,6 @@ repa.so:
 		sudo python setup.py install &&\
 		cd ./build/ &&\
 		cd $$(ls | egrep '^lib') &&\
-		cp repa.so ../../librepa.so &&\
-		sudo cp repa.so /usr/lib/librepa.so &&\
+		cp repa.so ../../ &&\
+		sudo cp repa.so /usr/lib/ &&\
 		sudo ldconfig
