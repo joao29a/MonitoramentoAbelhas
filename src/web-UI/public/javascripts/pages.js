@@ -113,6 +113,7 @@ $("#lvideos").click(function() {
     $("#historico").hide();
     $("#strobeMediaPlayback").hide();
     $("#imagens-cam").hide();
+    $("#imagens-list").hide();
     showVideos();
 });
 
