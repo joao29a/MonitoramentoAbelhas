@@ -3,11 +3,32 @@ $(document).ready(function (e) {
   //tc.startClockUpdate();
   update();
   setInterval(function() { updateImages() }, 60000);
+  getPicturesFolders();
   $("#strobeMediaPlayback").hide();
   $("#imagens-cam").hide();
   $("#historico").hide();
+  $("#imagens-list").hide();
   hideVideos();
 });
+
+function getPicturesFolders(){
+    $.get('pictures').success(function(data){
+        data = data.split('&');
+        data.pop();
+        var divList = document.getElementById('imagens-list');
+        var select = document.createElement('select');
+        select.id = 'imagens-select-id';
+        select.onchange = updateImages;
+        divList.appendChild(select);
+        for (var i = data.length - 1; i >= 0; i--) {
+            var option = document.createElement('option');
+            option.value = data[i];
+            var text = document.createTextNode(data[i]);
+            option.appendChild(text);
+            select.appendChild(option);
+        }
+    });
+}
 
 function hideVideos() {
    $('#video-list').empty();
@@ -53,6 +74,7 @@ $("#ltempoReal").click(function() {
   $("#historico").hide();
   $("#strobeMediaPlayback").hide();
   $("#imagens-cam").hide();
+  $("#imagens-list").hide();
   hideVideos();
   $("#GraphsGrid").show();
 });
@@ -61,6 +83,7 @@ $("#lhistorico").click(function() {
   $("#GraphsGrid").hide();
   $("#strobeMediaPlayback").hide();
   $("#imagens-cam").hide();
+  $("#imagens-list").hide();
   hideVideos();
   $("#historico").show();
   fillNodesOptions();
@@ -70,6 +93,7 @@ $("#lstream").click(function() {
   $("#GraphsGrid").hide();
   $("#historico").hide();
   $("#imagens-cam").hide();
+  $("#imagens-list").hide();
   hideVideos();
   $("#strobeMediaPlayback").show();
 });
@@ -80,6 +104,7 @@ $("#lpictures").click(function() {
   $("#strobeMediaPlayback").hide();
   hideVideos();
   $("#imagens-cam").show();
+  $("#imagens-list").show();
   updateImages();
 });
 
@@ -92,12 +117,23 @@ $("#lvideos").click(function() {
 });
 
 var images_file = {}
+var images_folder = null
 
 function updateImages() {
-     $.get('pictures').success(
+    var select = document.getElementById('imagens-select-id');
+    var folder = select.options[select.selectedIndex].value;
+    folder = folder.replace(' ', '');
+    $.get('pictures/'+folder).success(
     function(data) {
         data = data.split('<br>');
-        var folder = data.pop().replace(' ', '');
+        folder = data.pop().replace(' ', '');
+        if (folder != images_folder) {
+            images_folder = folder;
+            for (var i in images_file) {
+                delete images_file[i];
+            }
+            $('#imagens-cam').empty();
+        }
         for (var i = data.length - 1; i >= 0; i--) {
           var value = data[i].split('&');
           value[0] = value[0].replace(' ', '');

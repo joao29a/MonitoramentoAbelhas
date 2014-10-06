@@ -28,7 +28,7 @@ var DATABASE   = 'monitorAbelhas';
 var user = {
     id: 1,
     username: 'minhacasa',
-    pass: '123',
+    pass: '',
 };
 
 var db_config = {
@@ -133,31 +133,27 @@ app.configure('production', function(){
 
 // Routes
 
-var dates = []
-
 function checkFolders(callback) {
-    var d     = new Date();
-    var year  = d.getFullYear();
-    var month = ('0'+(d.getMonth()+1)).slice(-2);
-    var day   = ('0'+(d.getDate())).slice(-2);
-    var fulldate = year + '-' + month + '-' + day;
-    if (dates.indexOf(fulldate) == -1) {
-        dates.push(fulldate);
-        if (dates.length >= 3) dates.shift();
+    var path = 'public/imagens/';
+    if (fs.existsSync(path)) {
+        var data = fs.readdirSync(path);
+        if (data.length > 0) {
+            callback(data);
+        }
     }
-    for (var i = dates.length - 1; i >= 0; i--) {
-        var path = 'public/imagens/' + dates[i];
-        if (fs.existsSync(path)) {
-            var data = fs.readdirSync(path);
-            if (data.length > 0) {
-                var datatime = [];
-                for (var j = 0; j < data.length; j++) {
-                    datatime.push([data[j], fs.statSync(path + '/' + data[j]).ctime]);
-                }
-                datatime.push(dates[i]);
-                callback(datatime);
-                break;
+}
+
+function getImages(folder, callback) {
+    var path = 'public/imagens/' + folder;
+    if (fs.existsSync(path)) {
+        var data = fs.readdirSync(path);
+        if (data.length > 0) {
+            var datatime = []; 
+            for (var j = 0; j < data.length; j++) {
+                datatime.push([data[j], fs.statSync(path + '/' + data[j]).ctime]);
             }
+            datatime.push(folder);
+            callback(datatime);
         }
     }
 }
@@ -178,6 +174,11 @@ app.get('/exportData/:mode',      ensureAuthenticated   , exportData.exportData)
 app.get('/deleteData/:mode',      ensureAuthenticated   , deleteData.deleteData);
 app.get('/pictures',             ensureAuthenticated   , function(req, res){
     checkFolders(function(data) {
+        res.render('picturesFolders', {layout: false, result : data});
+    });
+});
+app.get('/pictures/:folder',             ensureAuthenticated   , function(req, res){
+    getImages(req.params.folder, function(data) {
         res.render('pictures', {layout: false, result : data});
     });
 });
