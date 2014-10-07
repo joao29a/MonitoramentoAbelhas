@@ -15,6 +15,7 @@ var express     =  require('express')
   , LocalStrategy = require('passport-local').Strategy
   , flash       = require('connect-flash')
   , fs          = require('fs')
+  , exec        = require('child_process').exec
   , dataDB      =  require('./public/javascripts/dataDAO');
 
 // DataBase - Mysql
@@ -185,6 +186,14 @@ app.get('/pictures/:folder',             ensureAuthenticated   , function(req, r
 app.get('/videos', ensureAuthenticated, function(req, res) {
     getVideos(function(data) {
         res.render('videos', {layout: false, result: data});
+    });
+});
+app.get('/gate', ensureAuthenticated, function(req, res) {
+    exec('sudo ./public/portao', function(error, stdout, stderr) {
+        if (error == null) {
+            res.render('layoutEmpty', {layout: false});
+        }
+        else console.log(error);
     });
 });
 

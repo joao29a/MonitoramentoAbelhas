@@ -8,6 +8,7 @@ $(document).ready(function (e) {
   $("#imagens-cam").hide();
   $("#historico").hide();
   $("#imagens-list").hide();
+  $('#portao-id').hide();
   hideVideos();
 });
 
@@ -75,6 +76,7 @@ $("#ltempoReal").click(function() {
   $("#strobeMediaPlayback").hide();
   $("#imagens-cam").hide();
   $("#imagens-list").hide();
+  $('#portao-id').hide();
   hideVideos();
   $("#GraphsGrid").show();
 });
@@ -84,6 +86,7 @@ $("#lhistorico").click(function() {
   $("#strobeMediaPlayback").hide();
   $("#imagens-cam").hide();
   $("#imagens-list").hide();
+  $('#portao-id').hide();
   hideVideos();
   $("#historico").show();
   fillNodesOptions();
@@ -94,6 +97,7 @@ $("#lstream").click(function() {
   $("#historico").hide();
   $("#imagens-cam").hide();
   $("#imagens-list").hide();
+  $('#portao-id').show();
   hideVideos();
   $("#strobeMediaPlayback").show();
 });
@@ -102,6 +106,7 @@ $("#lpictures").click(function() {
   $("#GraphsGrid").hide();
   $("#historico").hide();
   $("#strobeMediaPlayback").hide();
+  $('#portao-id').hide();
   hideVideos();
   $("#imagens-cam").show();
   $("#imagens-list").show();
@@ -114,6 +119,7 @@ $("#lvideos").click(function() {
     $("#strobeMediaPlayback").hide();
     $("#imagens-cam").hide();
     $("#imagens-list").hide();
+    $('#portao-id').hide();
     showVideos();
 });
 
@@ -175,4 +181,10 @@ $("#llimpar").click(function() {
 $("#addHist").click(function() {
   $("#HistoricGrid").empty();
   addHistoric($("#nodesBox").val()); 
+});
+
+$('#portao-button').click(function() {
+    $.get('gate').success(function(data) {
+        alert('O portao esta abrindo/fechando');
+    });
 });
