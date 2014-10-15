@@ -185,6 +185,7 @@ $("#addHist").click(function() {
 
 $('#portao-button').click(function() {
     $.get('gate').success(function(data) {
-        alert('O portao esta abrindo/fechando');
+        $('#portao-id').fadeOut(500);
+        $('#portao-id').fadeIn(500);
     });
 });
