@@ -11,7 +11,7 @@
 
 #define TYPE Generic
 
-uint16_t port = 0;
+uint16_t port = 18;
 time_t bf_time = 0;
 
 TYPE GetGenericData() {
