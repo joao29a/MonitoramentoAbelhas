@@ -66,7 +66,7 @@ endif()
 ############## GENERIC ################
 add_executable(clientgeneric examples/generic/clientgeneric.cpp)
 
-target_link_libraries(clientgeneric repa pthread python2.7 mysqlclient msgpack)
+target_link_libraries(clientgeneric repa pthread python2.7 mysqlclient msgpack bcm2835)
 
 add_dependencies(clientgeneric repa)
 
