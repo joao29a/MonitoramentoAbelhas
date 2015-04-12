@@ -82,7 +82,7 @@ TYPE GetTVPower() {
 TYPE GetIP() {
   TYPE gen("ip address");
   gen.setType(5);
-  FILE* fp = popen("curl ipconfig.me", "r");
+  FILE* fp = popen("curl ifconfig.me", "r");
   char buffer[1024];
   while (fgets(buffer, sizeof(buffer), fp) != NULL);
   sscanf(buffer, "%[^\n]", buffer);

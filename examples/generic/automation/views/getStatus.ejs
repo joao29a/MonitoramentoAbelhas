@@ -1,1 +1,5 @@
-<%= result[0].Value -%>
+<% if (result[0].Value === 'standby') { %>
+<%= 'desligado' -%>
+<% } else if (result[0].Value === 'on') { %>
+<%= 'ligado' -%>
+<% } %>
